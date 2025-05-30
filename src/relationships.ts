@@ -99,7 +99,7 @@ async function getFollowingTimeline(
   params.set('variables', stringify(variables) ?? '');
 
   const res = await requestApi<RelationshipTimeline>(
-    `https://twitter.com/i/api/graphql/iSicc7LrzWGBgDPL0tM_TQ/Following?${params.toString()}`,
+    `https://x.com/i/api/graphql/iSicc7LrzWGBgDPL0tM_TQ/Following?${params.toString()}`,
     auth,
   );
 
@@ -147,7 +147,7 @@ async function getFollowersTimeline(
   params.set('variables', stringify(variables) ?? '');
 
   const res = await requestApi<RelationshipTimeline>(
-    `https://twitter.com/i/api/graphql/rRXFSG5vR6drKr5M37YOTw/Followers?${params.toString()}`,
+    `https://x.com/i/api/graphql/rRXFSG5vR6drKr5M37YOTw/Followers?${params.toString()}`,
     auth,
   );
 
@@ -162,7 +162,6 @@ export async function followUser(
   username: string,
   auth: TwitterAuth,
 ): Promise<Response> {
-
   // Check if the user is logged in
   if (!(await auth.isLoggedIn())) {
     throw new Error('Must be logged in to follow users');
@@ -186,7 +185,7 @@ export async function followUser(
   // Prepare the headers
   const headers = new Headers({
     'Content-Type': 'application/x-www-form-urlencoded',
-    Referer: `https://twitter.com/${username}`,
+    Referer: `https://x.com/${username}`,
     'X-Twitter-Active-User': 'yes',
     'X-Twitter-Auth-Type': 'OAuth2Session',
     'X-Twitter-Client-Language': 'en',
@@ -194,11 +193,14 @@ export async function followUser(
   });
 
   // Install auth headers
-  await auth.installTo(headers, 'https://api.twitter.com/1.1/friendships/create.json');
-  
+  await auth.installTo(
+    headers,
+    'https://api.x.com/1.1/friendships/create.json',
+  );
+
   // Make the follow request using auth.fetch
   const res = await auth.fetch(
-    'https://api.twitter.com/1.1/friendships/create.json',
+    'https://api.x.com/1.1/friendships/create.json',
     {
       method: 'POST',
       headers,
